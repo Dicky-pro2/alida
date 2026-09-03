@@ -647,16 +647,21 @@ h2 em {
     max-height: 0;
     overflow: hidden;
     opacity: 0;
+    pointer-events: none;
     transform: translateY(-18px);
+    visibility: hidden;
     transition:
       max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1),
       opacity 0.35s ease,
-      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0.35s ease;
   }
   .nav-links.is-open {
     max-height: 260px;
     opacity: 1;
+    pointer-events: auto;
     transform: translateY(0);
+    visibility: visible;
   }
   .handle {
     display: none;
@@ -782,6 +787,10 @@ h2 em {
   }
   .service-detail {
     grid-column: 2;
+    max-width: 100%;
+  }
+  .service.active .service-detail {
+    max-height: 220px;
   }
   .process-list {
     display: flex;

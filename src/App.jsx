@@ -144,6 +144,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeService, setActiveService] = useState(0);
   const [page, setPage] = useState(() => window.location.pathname);
+  const knownPages = ["/", "/pricing", "/brands", "/journey"];
   const navigate = (event, path) => {
     event.preventDefault();
     const destination = new URL(path, window.location.origin);
@@ -186,7 +187,8 @@ function App() {
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
-  const isHome = !["/pricing", "/brands", "/journey"].includes(page);
+  const currentPage = knownPages.includes(page) ? page : "/";
+  const isHome = currentPage === "/";
   return (
     <main>
       <nav className="nav shell" aria-label="Main navigation">
@@ -198,7 +200,10 @@ function App() {
         >
           <img src={alidaLogoFull} alt="ALIDA | Content & Brand Creative" />
         </a>
-        <motion.div className={`nav-links ${menuOpen ? "is-open" : ""}`}>
+        <motion.div
+          className={`nav-links ${menuOpen ? "is-open" : ""}`}
+          id="main-navigation-links"
+        >
           <a href="#work" onClick={(event) => navigate(event, "#work")}>
             Work
           </a>
@@ -227,6 +232,8 @@ function App() {
         <button
           className="menu-button"
           aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-controls="main-navigation-links"
+          aria-expanded={menuOpen}
           onClick={() => setMenuOpen(!menuOpen)}
         >
           {menuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -304,7 +311,7 @@ function App() {
               <br />
               <em>work.</em>
             </h2>
-            <span className="section-number">(01 — 03)</span>
+            <span className="section-number">(01 — 04)</span>
           </div>
           <div className="projects">
             {projects.map((project, index) => (
@@ -318,7 +325,10 @@ function App() {
               >
                 <div className="project-image">
                   <img src={project.image} alt={`${project.title} project`} />
-                  <span className="project-arrow">
+                  <span
+                    className="project-arrow"
+                    aria-label="Selected project"
+                  >
                     <ArrowUpRight size={22} />
                   </span>
                 </div>
@@ -412,11 +422,13 @@ function App() {
               <button
                 className={`service ${activeService === index ? "active" : ""}`}
                 key={title}
+                aria-expanded={activeService === index}
+                aria-controls={`service-panel-${index}`}
                 onClick={() => setActiveService(index)}
               >
                 <span>{num}</span>
                 <strong>{title}</strong>
-                <div className="service-detail">
+                <div className="service-detail" id={`service-panel-${index}`}>
                   <p>{desc}</p>
                   <img src={serviceImages[index]} alt="" />
                   <ArrowUpRight size={20} />
@@ -447,7 +459,7 @@ function App() {
           </div>
         </section>
       )}
-      {page === "/pricing" && (
+      {currentPage === "/pricing" && (
         <section className="pricing section shell" id="pricing">
           <div className="section-heading">
             <p className="eyebrow">Starting points</p>
@@ -471,7 +483,7 @@ function App() {
           </p>
         </section>
       )}
-      {page === "/brands" && (
+      {currentPage === "/brands" && (
         <section className="brands section shell">
           <div>
             <p className="eyebrow">Brands I’ve worked with</p>
@@ -507,7 +519,7 @@ function App() {
           </div>
         </section>
       )}
-      {page === "/journey" && (
+      {currentPage === "/journey" && (
         <section className="journey section shell" id="journey">
           <div className="journey-copy">
             <p className="eyebrow">Creator journey / September 1</p>
